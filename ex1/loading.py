@@ -1,7 +1,9 @@
+from ast import Module
 import importlib
+from types import ModuleType
+from typing import Optional
 
-
-def check_dependencies():
+def check_dependencies() -> dict[str, ModuleType]| None:
     dependencies = {
         "numpy": "np",
         "pandas": "pd",
@@ -17,11 +19,11 @@ def check_dependencies():
         except ImportError:
             print(f"[ERROR] {dependency} n'est pas installé")
     if len(modules) == 0:
-        modules = None
+        return None
     return modules
 
 
-def main():
+def main() -> None:
     modules = check_dependencies()
 
     if modules is None:
@@ -51,28 +53,27 @@ def main():
 
     data["label"] = y
     print("\nDataset :")
-    print(data.head())
+    print(data.head(10))
+
     indices = np.arange(len(X))
     np.random.shuffle(indices)
+    training_pourcentage = 0.8
 
-    learn_rate = 0.8
-
-    split_index = int(len(X) * learn_rate)
+    split_index = int(len(X) * training_pourcentage)
 
     train_indices = indices[:split_index]
     test_indices = indices[split_index:]
 
     X_train = X[train_indices]
     y_train = y[train_indices]
-
     X_test = X[test_indices]
     y_test = y[test_indices]
 
     weights = np.zeros(X_train.shape[1])
     bias = 0.0
 
-    learning_rate = 0.1
-    epochs = 100
+    learning_rate = 0.8
+    epochs = 10
 
     errors_history = []
     for epoch in range(epochs):
@@ -105,6 +106,7 @@ def main():
         if total_errors == 0:
             print("Training completed.")
             break
+    print(errors_history)
 
     values = np.dot(X_test, weights) + bias
 
@@ -128,11 +130,6 @@ def main():
 
     print("\nExpected:")
     print(y_test)
-
-    # -------------------------
-    # 8. Visualisation des données
-    # -------------------------
-
     plt.figure()
 
     plt.scatter(
