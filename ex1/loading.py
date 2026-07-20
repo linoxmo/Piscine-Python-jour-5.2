@@ -1,9 +1,8 @@
-from ast import Module
 import importlib
 from types import ModuleType
-from typing import Optional
 
-def check_dependencies() -> dict[str, ModuleType]| None:
+
+def check_dependencies() -> dict[str, ModuleType] | None:
     dependencies = {
         "numpy": "np",
         "pandas": "pd",
